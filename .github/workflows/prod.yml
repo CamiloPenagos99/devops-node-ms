@@ -3,7 +3,7 @@ concurrency: ${{ github.event.repository.name }}-prod
 on:
   push:
     branches:
-      - 'master'
+      - 'main'
 env:
     SERVICE_NAME: ${{ github.event.repository.name }}
     PROJECT_CLUSTER_ID: ${{ secrets.PROJECT_CLUSTER_ID_PROD }}
