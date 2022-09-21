@@ -4,7 +4,7 @@ pipeline {
   triggers {
     githubPush()
   }
-  
+
   stages {
     stage('Init') {
       steps {
@@ -35,6 +35,15 @@ pipeline {
         echo 'Cleaning..'
         echo 'Running docker rmi..'
       }
+    }
+  }
+  
+  post {
+    success {
+        setBuildStatus("Build succeeded", "SUCCESS");
+    }
+    failure {
+        setBuildStatus("Build failed", "FAILURE");
     }
   }
 }
