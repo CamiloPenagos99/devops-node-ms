@@ -1,13 +1,13 @@
 {
-    "name": "example",
+    "name": "devops-node-ms",
     "version": "1.0.0",
     "main": "dist/infrastructure/api/Server.js",
-    "description": "Proyecto que contiene la plantilla para los microservicios de Coordinadora",
+    "description": "Proyecto que contiene la plantilla de microservicios en Node.Js",
     "license": "UNLICENSED",
     "private": true,
     "author": {
-        "email": "it@coordinadora.com",
-        "name": "Coordinadora Mercantil S.A"
+        "email": "penagoscamilo99@gmail.com",
+        "name": "Camilo Penagos"
     },
     "scripts": {
         "build": "rimraf dist && tsc -p tsconfig.build.json",
