@@ -1,6 +1,6 @@
 const scanner = require('sonarqube-scanner');
 scanner({
-    serverUrl: 'https://api.coordinadora.com/sonar/',
+    serverUrl: 'https://api.devops.com/sonar/',
     options: {
         'sonar.projectVersion': '1.1.0',
         'sonar.sources': 'src',

@@ -9,9 +9,9 @@ export const swagger_config: FastifyDynamicSwaggerOptions = {
             description: 'Este microservicio se encarga de guardar la configuración inicial Firestore',
             version: '0.1.0',
             contact: {
-                name: 'Coordinadora Mercantil S.A',
-                url: 'http://www.coordinadora.com/',
-                email: 'it@coordinadora.com',
+                name: 'devops S.A',
+                url: 'http://www.devops.com/',
+                email: 'it@devops.com',
             },
         },
         host: HOST,

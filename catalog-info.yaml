@@ -3,7 +3,7 @@ kind: Component
 metadata:
   name: cm-plantilla-microservicio-gke
   annotations:
-    github.com/project-slug: coordinadora-mercantil/cm-plantilla-microservicio-gke
+    github.com/project-slug: devops-devops/cm-plantilla-microservicio-gke
     backstage.io/techdocs-ref: value
 spec:
   type: Template
