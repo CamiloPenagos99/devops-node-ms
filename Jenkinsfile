@@ -33,6 +33,10 @@ pipeline {
     stage('Init') {
       steps {
         echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
+        script {
+            buildName "Build-${env.FULL_PATH_BRANCH}#${env.BUILD_ID}"
+            buildDescription "Executed pipeline ${env.FULL_PATH_BRANCH}"
+        }
         sh 'printenv | sort'
         echo "rama actual: " + env.GIT_BRANCH
 
