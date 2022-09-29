@@ -34,11 +34,11 @@ pipeline {
       steps {
         echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
         script {
-            buildName "Build-${env.FULL_PATH_BRANCH}#${env.BUILD_ID}"
-            buildDescription "Executed pipeline ${env.FULL_PATH_BRANCH}"
+            buildName "Build: ${env.GIT_BRANCH}#${env.BUILD_ID}"
+            buildDescription "Executed pipeline ${env.GIT_BRANCH}"
         }
         sh 'printenv | sort'
-        echo "rama actual: " + env.GIT_BRANCH
+        //echo "rama actual: " + env.GIT_BRANCH
 
         //git credentialsId: 'token-github', branch: '**', url: 'https://github.com/CamiloPenagos99/devops-node-ms.git'
         script {
