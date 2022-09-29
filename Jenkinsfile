@@ -50,14 +50,14 @@ pipeline {
           ]])
 
           // Display the variable using scmVars
-          echo "scmVars.GIT_COMMIT"
-          echo "${scmVars.GIT_COMMIT}"
+          //echo "scmVars.GIT_COMMIT"
+          //echo "${scmVars.GIT_COMMIT}"
 
           // Displaying the variables saving it as environment variable
           env.GIT_COMMIT = scmVars.GIT_COMMIT
           env.GITHUB_BRANCH = scmVars.GIT_BRANCH
-          echo "env.GIT_COMMIT"
-          echo "${env.GIT_COMMIT}"
+          //echo "env.GIT_COMMIT"
+          //echo "${env.GIT_COMMIT}"
         }
         echo "info git " + env.GIT_COMMIT + env.GITHUB_BRANCH
         sh 'pwd'
