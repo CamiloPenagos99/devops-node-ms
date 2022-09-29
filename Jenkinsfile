@@ -1,3 +1,17 @@
+void setBuildStatus(String message, String state) {
+  step([
+    $class: "GitHubCommitStatusSetter",
+    reposSource: [$class: "ManuallyEnteredRepositorySource", url: "https://github.com/CamiloPenagos99/devops-node-ms"],
+    contextSource: [$class: "ManuallyEnteredCommitContextSource", context: "ci/jenkins/build-status"],
+    errorHandlers: [
+      [$class: "ChangingBuildStatusErrorHandler", result: "UNSTABLE"]
+    ],
+    statusResultSource: [$class: "ConditionalStatusResultSource", results: [
+      [$class: "AnyBuildResult", message: message, state: state]
+    ]]
+  ]);
+}
+
 pipeline {
 
   agent any
@@ -8,7 +22,7 @@ pipeline {
 
   environment {
     FULL_PATH_BRANCH = "${sh(script:'git name-rev --name-only HEAD', returnStdout: true)}"
-    GIT_BRANCH = FULL_PATH_BRANCH.substring(FULL_PATH_BRANCH.lastIndexOf('/') + 1, FULL_PATH_BRANCH.length())
+    GIT_BRANCH = FULL_PATH_BRANCH.substring(FULL_PATH_BRANCH.lastIndexOf('/') + 1, FULL_PATH_BRANCH.length()).trim()
   }
 
   tools {
@@ -18,23 +32,50 @@ pipeline {
   stages {
     stage('Init') {
       steps {
-        sh 'printenv | sort'
-        echo "rama" + env.GIT_BRANCH
         echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
-        git credentialsId: 'token-github', url: 'https://github.com/CamiloPenagos99/devops-node-ms.git'
-        echo 'cloning..'
+        script {
+            buildName "Build: ${env.GIT_BRANCH}#${env.BUILD_ID}"
+            buildDescription "Executed pipeline ${env.GIT_BRANCH}"
+        }
+        sh 'printenv | sort'
+        //echo "rama actual: " + env.GIT_BRANCH
+
+        //git credentialsId: 'token-github', branch: '**', url: 'https://github.com/CamiloPenagos99/devops-node-ms.git'
+        script {
+          // Checkout the repository and save the resulting metadata
+          def scmVars = checkout([$class: 'GitSCM', branches: [
+            [name: '*/*']
+          ], extensions: [], userRemoteConfigs: [
+            [credentialsId: 'token-github', url: 'https://github.com/CamiloPenagos99/devops-node-ms.git']
+          ]])
+
+          // Display the variable using scmVars
+          echo "scmVars.GIT_COMMIT"
+          echo "${scmVars.GIT_COMMIT}"
+
+          // Displaying the variables saving it as environment variable
+          env.GIT_COMMIT = scmVars.GIT_COMMIT
+          env.GITHUB_BRANCH = scmVars.GIT_BRANCH
+          echo "env.GIT_COMMIT"
+          echo "${env.GIT_COMMIT}"
+        }
+        echo "info git " + env.GIT_COMMIT + env.GITHUB_BRANCH
         sh 'pwd'
         sh 'ls'
+
       }
-    }
-    stage('master-branch-stuff') {
-      when {
-        expression {
-          return env.GIT_BRANCH.trim() == "master"
+      post {
+        always {
+          setBuildStatus("Build pending", "PENDING");
         }
       }
+    }
+    stage('stage-branch-stuff') {
+      when {
+        environment name: 'GIT_BRANCH', value: 'stage'
+      }
       steps {
-        echo 'run this stage - ony if the branch = master branch'
+        echo 'run this stage - when branch is equal to stage'
       }
     }
     stage('Dependencies') {
@@ -45,8 +86,14 @@ pipeline {
     }
     stage('Test') {
       steps {
-        sh 'npm run test'
-        echo 'Testing..'
+        parallel(
+          "unit-test": {
+            sh script: 'npm run test',
+            label: "unit-test"
+            echo 'Testing..'
+          }
+        )
+
       }
     }
     stage('Lint') {
@@ -73,6 +120,17 @@ pipeline {
         echo 'Cleaning..'
         echo 'Running docker rmi..'
       }
+    }
+  }
+  post {
+    always {
+      echo "post ! notify build status"
+    }
+    success {
+      setBuildStatus("Build complete", "SUCCESS");
+    }
+    failure {
+      setBuildStatus("Build failed", "FAILURE");
     }
   }
 }
