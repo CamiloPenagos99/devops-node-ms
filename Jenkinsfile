@@ -34,8 +34,8 @@ pipeline {
       steps {
         echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
         script {
-            buildName "Build: ${env.GIT_BRANCH}#${env.BUILD_ID}"
-            buildDescription "Executed pipeline ${env.GIT_BRANCH}"
+          buildName "Build: ${env.GIT_BRANCH}#${env.BUILD_ID}"
+          buildDescription "Executed pipeline ${env.GIT_BRANCH}"
         }
         sh 'printenv | sort'
         //echo "rama actual: " + env.GIT_BRANCH
@@ -94,6 +94,13 @@ pipeline {
           }
         )
 
+      }
+    }
+    stage('analysis') {
+      steps {
+        withSonarQubeEnv('My SonarQube Server') {
+          sh 'mvn clean package sonar:sonar'
+        }
       }
     }
     stage('Lint') {
