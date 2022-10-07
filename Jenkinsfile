@@ -99,7 +99,14 @@ pipeline {
     stage('analysis') {
       steps {
         withSonarQubeEnv('sonarqube') {
-          sh 'mvn clean package sonar:sonar'
+          def scannerHome = tool 'SonarScanner 4.0';
+          //sh 'mvn clean package sonar:sonar'
+          echo 'sonar...'
+          echo "${env.SONAR_HOST_URL}"
+          sh "${scannerHome}/bin/sonar-scanner"
+        }
+        timeout(time: 10, unit: 'MINUTES') {
+          waitForQualityGate abortPipeline: true
         }
       }
     }
