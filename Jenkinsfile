@@ -106,7 +106,7 @@ pipeline {
           echo "SonarServer ${env.SONAR_HOST_URL}"
           sh "${scannerHome}/bin/sonar-scanner"
         }
-        timeout(time: 10, unit: 'MINUTES') {
+        timeout(time: 3, unit: 'MINUTES') {
           waitForQualityGate abortPipeline: true
         }
       }
